@@ -40,11 +40,10 @@ The session's identity is decided by the environment Claude Code is started from
 | `STRATONEXT_AUTH_API_CLIENT_ID` **and** `STRATONEXT_AUTH_API_CLIENT_SECRET` set | **Agent** — the session *is* that registered External agent | Does the work itself: tracks it on a task assigned to itself, gets short-lived AWS credentials from StratoNext (`stratonext credential issue`), and requests an escalation (approved by a human in the web app) when it hits a permission wall. No dispatch. |
 | Anything else | **User** — whoever ran `stratonext login` | Platform work directly through the MCP tools; work that must act inside a cloud account is dispatched to a StratoNext agent as a task. No cloud credentials are issued. |
 
-The MCP server, the CLI, the hook and the skills all apply the same rule, so they always agree.
-Use agent identity for sessions that run as an agent — a headless or CI run, or a cloud session
-configured with the agent's credential — and set the pair in that environment (secrets store,
-`env` settings), never in a committed file. A person working interactively should stay a user and
-let the agent do the cloud work.
+The rule is only whether the credential is present: if it is, the session **is** the agent —
+interactive or headless, whoever is at the keyboard. The MCP server, the CLI, the hook and the
+skills all apply it, so they always agree. Put the pair in the environment Claude Code starts from
+(a secrets store, a cloud environment's variables, `env` settings), never in a committed file.
 
 ## How it stays current
 

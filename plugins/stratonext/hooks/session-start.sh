@@ -13,8 +13,9 @@ StratoNext identity for this session: AGENT.
 
 This Claude Code session was started with an External agent credential
 (STRATONEXT_AUTH_API_CLIENT_ID / STRATONEXT_AUTH_API_CLIENT_SECRET), so you ARE that StratoNext
-agent: the `stratonext` MCP server and the `stratonext` CLI both authenticate as it, scoped to its
-workspace. Do StratoNext work yourself — do not dispatch it to another agent.
+agent — even when a person is typing the requests: the `stratonext` MCP server and the
+`stratonext` CLI both authenticate as it, scoped to its workspace. Do StratoNext work yourself,
+including getting cloud credentials — do not dispatch it to another agent.
 
 - Track the work on a task assigned to you: `create_task` (it defaults to you), then
   `set_task_status` START to claim it, `report_task_progress` as you go, and COMPLETE with a
@@ -41,7 +42,8 @@ The `stratonext` MCP server and CLI act as the human signed in with `stratonext 
 `stratonext:setup` skill if they are not signed in). StratoNext issues no cloud credentials to a
 user session: work that has to act inside a cloud account is dispatched to a StratoNext agent —
 create a task assigned to the agent and START it (that dispatches it), then read back its result.
-Never set STRATONEXT_AUTH_API_CLIENT_ID / _SECRET or run as an agent to obtain credentials.
+No agent credential is in this session's environment, so do not try to obtain cloud credentials.
+(Starting Claude Code with STRATONEXT_AUTH_API_CLIENT_ID / _SECRET set makes the session the agent.)
 
 Load the `stratonext:stratonext` skill before your first StratoNext action.
 MSG
