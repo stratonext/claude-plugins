@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "stratonext",
+  "owner": {
+    "name": "StratoNext",
+    "url": "https://www.stratonext.com"
+  },
+  "metadata": {
+    "description": "Claude Code plugins for the StratoNext Agentic Operations Platform."
+  },
+  "plugins": [
+    {
+      "name": "stratonext",
+      "source": "./plugins/stratonext",
+      "description": "Work with StratoNext projects, tasks, approvals, environments, reports and assets from Claude Code.",
+      "category": "devops"
+    }
+  ]
+}

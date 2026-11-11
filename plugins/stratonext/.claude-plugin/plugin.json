@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "stratonext",
+  "displayName": "StratoNext",
+  "version": "0.1.0",
+  "description": "Work with the StratoNext Agentic Operations Platform from Claude Code: projects, tasks, task templates, approvals, environments, reports and assets, through the StratoNext MCP server.",
+  "author": {
+    "name": "StratoNext",
+    "url": "https://www.stratonext.com"
+  },
+  "homepage": "https://www.stratonext.com",
+  "repository": "https://github.com/stratonext/claude-plugins",
+  "license": "MIT",
+  "keywords": ["stratonext", "devops", "operations", "agents", "mcp", "aws"],
+  "mcpServers": {
+    "stratonext": {
+      "command": "uvx",
+      "args": ["stratonext@latest", "mcp"]
+    }
+  }
+}
