@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "stratonext",
   "displayName": "StratoNext",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Work with the StratoNext Agentic Operations Platform from Claude Code: projects, tasks, task templates, approvals, environments, reports and assets, through the StratoNext MCP server.",
   "author": {
     "name": "StratoNext",

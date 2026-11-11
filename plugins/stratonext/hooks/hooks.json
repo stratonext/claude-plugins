@@ -1,0 +1,15 @@
+{
+  "description": "Tell each session whether it runs as a StratoNext agent or as the signed-in user.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}
