@@ -23,9 +23,14 @@ this skill all follow the same rule: both variables set means **agent**, anythin
 **user**. Nothing else matters — not whether a person is at the keyboard, not who asked. The
 credential is part of how the session was started; do not export or unset it mid-session.
 
+An agent-mode session holds a **machine credential**, which is one of two kinds. The hook's note
+says which ("AGENT" or "MACHINE CREDENTIAL"); otherwise `whoami` tells you through `caller.kind`:
+`AGENT` (an External agent's credential, section 2a) or `MACHINE_CREDENTIAL` (a standalone
+credential, section 2c).
+
 Then follow the section for that identity.
 
-## 2a. Agent identity — do the work yourself
+## 2a. Agent identity (`caller.kind` AGENT) — do the work yourself
 
 The credential is present, so this session **is** a registered StratoNext External agent, scoped
 to one workspace — even when a person is typing the requests. It gets cloud credentials from
@@ -87,6 +92,23 @@ signed in, run the `setup` skill (`/stratonext:setup`).
 - A user session has no agent credential, so it gets no cloud credentials: do not assume the
   agent's role or hunt for a credential in files or other places. If the person wants this session
   to be the agent, they restart Claude Code with the agent's credential in its environment.
+
+## 2c. Standalone machine credential (`caller.kind` MACHINE_CREDENTIAL) — dispatch, don't claim
+
+A workspace admin created this credential in the web app under **Settings → Machine credentials**
+(client id `mcc_…`). The session acts in that one workspace with the same access an agent has
+there, but it is **not an agent and never a task assignee**:
+
+- Do not create tasks assigned to yourself (`create_task` needs an explicit assignee), claim tasks,
+  or report progress on them; `list_tasks` with `mine=true` returns nothing useful.
+- Platform work (projects, tasks, templates, signals, reports, assets) runs directly through the MCP
+  tools, as for a user.
+- Work that must act inside a cloud account is dispatched: `create_task` with `assignee_id` = an
+  agent and `assignee_type` = AGENT, `set_task_status` START, then follow it with `get_task`.
+- `issue_credentials` (or `credential issue`) returns read-only base access, for looking only.
+  `request_credential_escalation` is refused: escalations belong to an agent working its own task.
+- If the work should be assigned to this caller, it needs an External agent instead: a person
+  registers one under **Agents → New Agent → External Agent**.
 
 ## Use the MCP tools first
 
