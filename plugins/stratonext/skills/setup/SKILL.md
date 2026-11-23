@@ -1,6 +1,6 @@
 ---
 name: setup
-description: Set up StratoNext in Claude Code — install uv if missing, detect whether the session runs as a StratoNext agent (agent credential in the environment) or as a user, sign a user in with `stratonext login`, and confirm the StratoNext MCP server is connected. Use when the user runs /stratonext:setup, says they just installed the StratoNext plugin, or a StratoNext tool fails with "Not signed in" or the server shows as failed in /mcp.
+description: Set up StratoNext in Claude Code — install uv if missing, detect whether the session runs with a StratoNext machine credential (an External agent's or a standalone one, in the environment) or as a user, sign a user in with `stratonext login`, and confirm the StratoNext MCP server is connected. Use when the user runs /stratonext:setup, says they just installed the StratoNext plugin, or a StratoNext tool fails with "Not signed in" or the server shows as failed in /mcp.
 ---
 
 # Set up StratoNext
@@ -8,9 +8,13 @@ description: Set up StratoNext in Claude Code — install uv if missing, detect 
 The plugin runs the StratoNext MCP server with `uvx stratonext@latest mcp`. It needs **uv** (which
 provides `uvx`) and an identity, which is one of:
 
-- **Agent** — the environment Claude Code was started from holds an External agent credential
-  (`STRATONEXT_AUTH_API_CLIENT_ID` and `STRATONEXT_AUTH_API_CLIENT_SECRET`). The session then *is*
-  that agent: no login, and it gets cloud credentials from StratoNext itself.
+- **Machine credential** — the environment Claude Code was started from holds
+  `STRATONEXT_AUTH_API_CLIENT_ID` and `STRATONEXT_AUTH_API_CLIENT_SECRET`. No login. Either:
+  - an **External agent**'s credential: the session *is* that agent, and gets cloud credentials
+    from StratoNext itself; or
+  - a **standalone machine credential** (client id `mcc_…`, created under Settings → Machine
+    credentials): it acts in its workspace but is never assigned tasks, so cloud work is dispatched
+    to an agent.
 - **User** — a person signed in with `stratonext login`. The MCP server can never start a login
   itself, so sign-in is always one terminal command. Cloud work is dispatched to an agent.
 
@@ -31,7 +35,7 @@ Run `uvx --version`.
 
 ## 2. Detect the identity
 
-Check whether the agent credential is present, without printing either value:
+Check whether a machine credential is present, without printing either value:
 
 ```bash
 [ -n "$STRATONEXT_AUTH_API_CLIENT_ID" ] && [ -n "$STRATONEXT_AUTH_API_CLIENT_SECRET" ] && echo agent || echo user
@@ -65,7 +69,12 @@ refresh token expires.
 
 Call the `whoami` tool from the `stratonext` MCP server and check `authMode`.
 
-- **`agent`**: setup is done. Summarize which agent this session runs as (from `caller`) and its
+- **`agent`** with `caller.kind` **`MACHINE_CREDENTIAL`**: setup is done. Summarize the credential
+  (`caller.id`) and its workspace, and tell the user that this session works in that workspace
+  directly but is not an agent: it is never assigned tasks, gets read-only cloud credentials only,
+  and dispatches work that must change a cloud account to a StratoNext agent. Offer a first step
+  such as listing the workspace's projects or open tasks.
+- **`agent`** with `caller.kind` **`AGENT`**: setup is done. Summarize which agent this session runs as (from `caller`) and its
   workspace, and tell the user that this session does StratoNext work itself — it tracks the work
   on a task assigned to itself and gets short-lived cloud credentials from StratoNext for tracked
   environments, asking for an escalation when it needs more. Offer a first step such as listing the
